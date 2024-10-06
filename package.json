@@ -1,0 +1,11 @@
+{
+  "name": "dashboard-application",
+  "version": "1.0.0",
+  "description": "A simple dashboard application",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "dependencies": {
+    "serve": "^14.2.1"
+  }
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100">
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            </div>
+        </header>
+        <main>
+            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div class="px-4 py-6 sm:px-0">
+                    <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 p-4 overflow-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-2xl font-semibold">User Management</h2>
+                            <button id="createUserBtn" class="bg-green-500 text-white px-4 py-2 rounded-md flex items-center">
+                                <i data-lucide="plus-circle" class="w-4 h-4 mr-2"></i>
+                                Create User
+                            </button>
+                        </div>
+                        <div id="createUserForm" class="bg-white p-4 rounded-lg shadow mb-4" style="display: none;">
+                            <h3 class="text-lg font-semibold mb-2">Create New User</h3>
+                            <input type="text" id="newUserName" placeholder="Name" class="w-full p-2 mb-2 border rounded">
+                            <input type="email" id="newUserEmail" placeholder="Email" class="w-full p-2 mb-2 border rounded">
+                            <button id="submitNewUser" class="bg-blue-500 text-white px-4 py-2 rounded-md">
+                                Create
+                            </button>
+                        </div>
+                        <ul id="userList" class="space-y-4">
+                            <!-- User list will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="fixed bottom-4 right-4">
+            <button id="notificationBtn" class="bg-purple-500 text-white p-3 rounded-full shadow-lg hover:bg-purple-600 transition duration-300">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        lucide.createIcons();
+
+        let users = [
+            { id: 1, name: 'John Doe', email: 'john@example.com', status: 'Onboarding' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', status: 'First Draft' },
+        ];
+
+        const userList = document.getElementById('userList');
+        const createUserBtn = document.getElementById('createUserBtn');
+        const createUserForm = document.getElementById('createUserForm');
+        const submitNewUser = document.getElementById('submitNewUser');
+
+        function updateUserList() {
+            userList.innerHTML = '';
+            users.forEach((user) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'bg-white p-4 rounded-lg shadow flex items-center justify-between';
+                listItem.innerHTML = `
+                    <div class="flex items-center">
+                        <i data-lucide="user" class="w-8 h-8 text-gray-500 mr-4"></i>
+                        <div>
+                            <p class="font-semibold">${user.name}</p>
+                            <p class="text-sm text-gray-500">${user.email}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <select onchange="handleStatusUpdate(${user.id}, this.value)" class="mr-4 p-2 border rounded">
+                            <option value="Onboarding" ${user.status === 'Onboarding' ? 'selected' : ''}>Onboarding</option>
+                            <option value="First Draft" ${user.status === 'First Draft' ? 'selected' : ''}>First Draft</option>
+                            <option value="Recommendation Letters" ${user.status === 'Recommendation Letters' ? 'selected' : ''}>Recommendation Letters</option>
+                            <option value="Incorporation" ${user.status === 'Incorporation' ? 'selected' : ''}>Incorporation</option>
+                        </select>
+                        <button onclick="requestDocs(${user.id})" class="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center">
+                            <i data-lucide="file-text" class="w-4 h-4 mr-2"></i>
+                            Request Docs
+                        </button>
+                    </div>
+                `;
+                userList.appendChild(listItem);
+            });
+            lucide.createIcons();
+        }
+
+        createUserBtn.addEventListener('click', function() {
+            createUserForm.style.display = createUserForm.style.display === 'none' ? 'block' : 'none';
+        });
+
+        submitNewUser.addEventListener('click', function() {
+            const name = document.getElementById('newUserName').value;
+            const email = document.getElementById('newUserEmail').value;
+            if (name && email) {
+                const newUser = {
+                    id: users.length + 1,
+                    name: name,
+                    email: email,
+                    status: 'Onboarding'
+                };
+                users.push(newUser);
+                updateUserList();
+                createUserForm.style.display = 'none';
+                document.getElementById('newUserName').value = '';
+                document.getElementById('newUserEmail').value = '';
+            }
+        });
+
+        function handleStatusUpdate(id, newStatus) {
+            users = users.map(user => user.id === id ? { ...user, status: newStatus } : user);
+            updateUserList();
+        }
+
+        function requestDocs(id) {
+            alert(`Requesting documents for user with ID: ${id}`);
+        }
+
+        document.getElementById('notificationBtn').addEventListener('click', function() {
+            alert('Notifications feature coming soon!');
+        });
+
+        updateUserList();
+    </script>
+</body>
+</html>

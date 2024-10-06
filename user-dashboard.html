@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="min-h-screen bg-gray-100">
+        <header class="bg-white shadow">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <h1 class="text-3xl font-bold text-gray-900">User Dashboard</h1>
+            </div>
+        </header>
+        <main>
+            <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+                <div class="px-4 py-6 sm:px-0">
+                    <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 p-4">
+                        <h2 class="text-2xl font-semibold mb-4">Application Status</h2>
+                        <div id="statusTimeline" class="flex items-center mb-8">
+                            <!-- Status timeline will be populated by JavaScript -->
+                        </div>
+                        <h2 class="text-2xl font-semibold mb-4">Document Uploads</h2>
+                        <ul id="documentList" class="space-y-4">
+                            <!-- Document list will be populated by JavaScript -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <div class="fixed bottom-4 right-4">
+            <button id="notificationBtn" class="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-600 transition duration-300">
+                <i data-lucide="bell" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        lucide.createIcons();
+
+        const statuses = ['Onboarding', 'First Draft', 'Recommendation Letters', 'Incorporation'];
+        const currentStatus = 'First Draft';
+
+        const statusTimeline = document.getElementById('statusTimeline');
+        statuses.forEach((status, index) => {
+            const statusElement = document.createElement('div');
+            statusElement.className = `flex items-center ${currentStatus === status ? 'text-blue-600' : 'text-gray-400'}`;
+            statusElement.innerHTML = `
+                <div class="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-blue-600 flex items-center justify-center">
+                    <i data-lucide="${currentStatus === status ? 'check-circle' : 'clock'}" class="w-6 h-6"></i>
+                </div>
+                <div class="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase">
+                    ${status}
+                </div>
+            `;
+            statusTimeline.appendChild(statusElement);
+
+            if (index < statuses.length - 1) {
+                const lineElement = document.createElement('div');
+                lineElement.className = `flex-auto border-t-2 transition duration-500 ease-in-out ${
+                    index < statuses.indexOf(currentStatus) ? 'border-blue-600' : 'border-gray-300'
+                }`;
+                statusTimeline.appendChild(lineElement);
+            }
+        });
+
+        const documents = [
+            { name: 'Resume', due: '2024-04-01', uploaded: false },
+            { name: 'Cover Letter', due: '2024-04-05', uploaded: false },
+            { name: 'Recommendation Letter 1', due: '2024-04-10', uploaded: false },
+        ];
+
+        const documentList = document.getElementById('documentList');
+        documents.forEach((doc, index) => {
+            const listItem = document.createElement('li');
+            listItem.className = 'flex items-center justify-between bg-white p-4 rounded-lg shadow';
+            listItem.innerHTML = `
+                <div>
+                    <p class="font-semibold">${doc.name}</p>
+                    <p class="text-sm text-gray-500">Due: ${doc.due}</p>
+                </div>
+                ${doc.uploaded ?
+                    '<i data-lucide="check-circle" class="w-6 h-6 text-green-500"></i>' :
+                    `<button onclick="handleUpload(${index})" class="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center">
+                        <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                        Upload
+                    </button>`
+                }
+            `;
+            documentList.appendChild(listItem);
+        });
+
+        function handleUpload(index) {
+            documents[index].uploaded = true;
+            updateDocumentList();
+        }
+
+        function updateDocumentList() {
+            documentList.innerHTML = '';
+            documents.forEach((doc, index) => {
+                const listItem = document.createElement('li');
+                listItem.className = 'flex items-center justify-between bg-white p-4 rounded-lg shadow';
+                listItem.innerHTML = `
+                    <div>
+                        <p class="font-semibold">${doc.name}</p>
+                        <p class="text-sm text-gray-500">Due: ${doc.due}</p>
+                    </div>
+                    ${doc.uploaded ?
+                        '<i data-lucide="check-circle" class="w-6 h-6 text-green-500"></i>' :
+                        `<button onclick="handleUpload(${index})" class="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center">
+                            <i data-lucide="upload" class="w-4 h-4 mr-2"></i>
+                            Upload
+                        </button>`
+                    }
+                `;
+                documentList.appendChild(listItem);
+            });
+            lucide.createIcons();
+        }
+
+        document.getElementById('notificationBtn').addEventListener('click', function() {
+            alert('Notifications feature coming soon!');
+        });
+    </script>
+</body>
+</html>
